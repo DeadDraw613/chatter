@@ -1,0 +1,75 @@
+<x-app-layout>
+    <div class="flex h-[80vh]">
+        <!-- Sidebar -->
+        <aside class="w-1/4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+            <div class="p-4 font-semibold text-gray-700 dark:text-gray-100 border-b">
+                Contacts
+            </div>
+            <ul class="flex-1 overflow-y-auto">
+                @foreach($users as $user)
+                    <li>
+                        <a href="{{ url('/chat/' . $user->id) }}"
+                            class="block p-3 hover:bg-gray-100 dark:hover:bg-gray-700 {{ isset($otherUser) && $otherUser->id === $user->id ? 'bg-gray-200 dark:bg-gray-700' : '' }}">
+                            {{ $user->name }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </aside>
+
+        <!-- Chat area -->
+        <section class="flex-1 flex flex-col">
+            @if($otherUser)
+                <!-- Header -->
+                <div class="border-b p-4 text-xl font-semibold">
+                    Chat with {{ $otherUser->name }}
+                </div>
+
+                <!-- Scrollable message area -->
+                <div id="messages"
+                     class="flex-1 overflow-y-auto space-y-2 bg-gray-50 dark:bg-gray-900 p-3 rounded-md">
+                    <p class="text-gray-500">Loading messages...</p>
+                </div>
+
+                <!-- Input bar -->
+                <div class="p-4 flex space-x-2 border-t bg-white dark:bg-gray-800">
+                    <input id="msgInput" type="text"
+                        placeholder="Type your message..."
+                        class="flex-grow rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring focus:ring-indigo-200" />
+                    <input id="imageInput" type="file" accept="image/*" 
+                        class="rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-900 dark:text-gray-100 p-2" />
+                    <button id="sendBtn"
+                        class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                        Send
+                    </button>
+                </div>
+            @else
+                <div class="flex-1 flex items-center justify-center text-gray-500">
+                    Select a user from the sidebar to start chatting.
+                </div>
+            @endif
+        </section>
+    </div>
+
+    @if($otherUser)
+        <script>
+            window.otherUserId = {{ $otherUser->id }};
+            window.currentUserId = {{ auth()->id() }};
+        </script>
+    @endif
+
+    <div id="imageModal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+        <img id="modalImg" src="" class="max-w-[90%] max-h-[90%] rounded-lg shadow-lg">
+    </div>
+
+    <script>
+    function openImageModal(src) {
+        const modal = document.getElementById('imageModal');
+        const img = document.getElementById('modalImg');
+        img.src = src;
+        modal.classList.remove('hidden');
+        modal.addEventListener('click', () => modal.classList.add('hidden'));
+    }
+    </script>
+
+</x-app-layout>

@@ -1,0 +1,235 @@
+
+<!-- <x-app-layout>
+    <div class="max-w-4xl mx-auto mt-6 bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                Chat withFUCK {{ $otherUser->name }}
+            </h2>
+        </div>
+
+        <div id="messages" class="p-6 h-96 overflow-y-auto space-y-3 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+            <p class="text-gray-500">Loading messages...</p>
+        </div>
+
+        <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex space-x-2">
+            <input id="messageInput"
+                   type="text"
+                   placeholder="Type your message..."
+                   class="flex-grow rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring focus:ring-indigo-200" />
+            <button id="sendBtn"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                Send
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const currentUserId = {{ auth()->id() }};
+        const otherUserId = {{ $otherUser->id }};
+        const messagesDiv = document.getElementById('messages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        async function loadMessages() {
+            try {
+                const response = await fetch(`/api/messages/${otherUserId}`, {
+                    credentials: 'same-origin',
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (!Array.isArray(data)) {
+                    console.error('Expected array, got:', data);
+                    messagesDiv.innerHTML = `<p class="text-red-500">Error: Invalid response format.</p>`;
+                    return;
+                }
+
+                messagesDiv.innerHTML = '';
+                data.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = `p-2 rounded-lg ${msg.sender_id === currentUserId ? 'bg-indigo-100 ml-auto text-right' : 'bg-gray-200'} max-w-[70%]`;
+                    div.textContent = msg.content;
+                    messagesDiv.appendChild(div);
+                });
+
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } catch (err) {
+                console.error('Error loading messages:', err);
+                messagesDiv.innerHTML = `<p class="text-red-500">Error loading messages: ${err.message}</p>`;
+            }
+        }
+
+        async function sendMessage() {
+            const content = messageInput.value.trim();
+            if (!content) return;
+
+            try {
+                const response = await fetch(`/api/messages`, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        recipient_id: otherUserId,
+                        content: content
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                messageInput.value = '';
+                await loadMessages();
+            } catch (err) {
+                console.error('Error sending message:', err);
+                alert('Failed to send message.');
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Initial load
+        loadMessages();
+        // Auto-refresh every 5s
+        setInterval(loadMessages, 5000);
+    </script>
+</x-app-layout> -->
+
+
+<x-app-layout>
+    <div class="max-w-4xl mx-auto mt-6 bg-white dark:bg-gray-800 shadow rounded-lg">
+
+        <div class="flex h-[80vh]">
+
+            {{-- Sidebar --}}
+            <aside class="w-1/4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+                <!-- <div class="p-4 font-semibold text-gray-700 dark:text-gray-100 border-b">
+                    Contacts
+                </div> -->
+                <ul>
+                    @foreach($users as $user)
+                        <li>
+                            <a href="{{ url('/chat/' . $user->id) }}"
+                            class="block p-3 hover:bg-gray-100 dark:hover:bg-gray-700 {{ isset($otherUser) && $otherUser->id === $user->id ? 'bg-gray-200 dark:bg-gray-700' : '' }}">
+                                {{ $user->name }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </aside>
+
+
+            {{-- Chat Window --}}
+            <section class="flex-1 flex flex-col">
+
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                        Chatting with {{ $otherUser->name }}
+                        <!-- @isset($otherUser->name)
+                            <p>The variable is set: {{ $otherUser->name }}</p>
+                        @else
+                            <p>The variable is not set.</p>
+                        @endisset -->
+                    </h2>
+                </div>
+
+                <div id="messages" class="p-6 h-96 overflow-y-auto space-y-3 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+                    <p class="text-gray-500">Loading messages...</p>
+                </div>
+
+                <div class="p-6 border-t border-gray-200 dark:border-gray-700 flex space-x-2">
+                    <input id="msgInput"
+                        type="text"
+                        placeholder="Type your message..."
+                        class="flex-grow rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring focus:ring-indigo-200" />
+                    <button id="sendBtn"
+                            class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                        Send
+                    </button>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        window.otherUserId = {{ $otherUser->id }};
+        window.currentUserId = {{ auth()->id() }};
+    </script>
+
+    <!-- @vite(['resources/js/chat.js']) -->
+    <!-- @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/chat.js']) -->
+
+</x-app-layout>
+
+
+<x-app-layout>
+    <div class="flex h-[80vh]">
+
+        {{-- Sidebar --}}
+        <aside class="w-1/4 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+            <div class="p-4 font-semibold text-gray-700 dark:text-gray-100 border-b">
+                Contacts
+            </div>
+            <ul>
+                @foreach($users as $user)
+                    <li>
+                        <a href="{{ url('/chat/' . $user->id) }}"
+                           class="block p-3 hover:bg-gray-100 dark:hover:bg-gray-700 {{ isset($otherUser) && $otherUser->id === $user->id ? 'bg-gray-200 dark:bg-gray-700' : '' }}">
+                            {{ $user->name }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </aside>
+
+        {{-- Chat Window --}}
+        <section class="flex-1 flex flex-col">
+            @if($otherUser)
+                <div class="flex-1 p-6 flex flex-col">
+                    <div class="border-b pb-2 mb-4 text-xl font-semibold">
+                        Chat with {{ $otherUser->name }}
+                    </div>
+
+                    <div id="messages" class="flex-1 overflow-y-auto space-y-2 bg-gray-50 dark:bg-gray-900 p-3 rounded-md">
+                        <p class="text-gray-500">Loading messages...</p>
+                    </div>
+
+                    <div class="mt-4 flex space-x-2">
+                        <input id="msgInput"
+                            type="text"
+                            placeholder="Type your message..."
+                            class="flex-grow rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring focus:ring-indigo-200" />
+                        <button id="sendBtn"
+                            class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+                            Send
+                        </button>
+                    </div>
+                </div>
+            @else
+                <div class="flex-1 flex items-center justify-center text-gray-500">
+                    Select a user from the sidebar to start chatting.
+                </div>
+            @endif
+        </section>
+
+    </div>
+
+    @if($otherUser)
+        <script>
+            window.otherUserId = {{ $otherUser->id }};
+            window.currentUserId = {{ auth()->id() }};
+        </script>
+        <!-- @vite('resources/js/chat.js') -->
+    @endif
+</x-app-layout>
