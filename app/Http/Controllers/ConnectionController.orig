@@ -1,0 +1,175 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Connection;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class ConnectionController extends Controller
+{
+    /**
+     * Send a connection request to another user.
+     * Endpoint: POST /api/connections/request
+     */
+    public function requestConnection(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+        ]);
+
+        $authUser = Auth::user();
+        $targetUser = User::where('email', $request->email)->first();
+
+        // Prevent self-connections
+        if ($authUser->id === $targetUser->id) {
+            return response()->json(['message' => 'You cannot connect with yourself.'], 400);
+        }
+
+        // Check if connection already exists (in any order)
+        $existing = Connection::where(function ($q) use ($authUser, $targetUser) {
+            $q->where('user_a_id', $authUser->id)
+              ->where('user_b_id', $targetUser->id);
+        })->orWhere(function ($q) use ($authUser, $targetUser) {
+            $q->where('user_a_id', $targetUser->id)
+              ->where('user_b_id', $authUser->id);
+        })->first();
+
+        if ($existing) {
+            if ($existing->status === 'requested') {
+                return response()->json(['message' => 'Connection request already sent.'], 409);
+            }
+            if ($existing->status === 'active') {
+                return response()->json(['message' => 'You are already connected.'], 409);
+            }
+            if ($existing->status === 'refused' || $existing->status === 'deactivated') {
+                // allow re-request by updating status
+                $existing->update(['status' => 'requested']);
+                return response()->json(['message' => 'New connection request sent.'], 200);
+            }
+        }
+
+        // Create new connection record
+        Connection::create([
+            'user_a_id' => $authUser->id,
+            'user_b_id' => $targetUser->id,
+            'status' => 'requested',
+        ]);
+
+        return response()->json(['message' => 'Connection request sent.'], 201);
+    }
+
+    /**
+     * Respond to a connection request (accept or refuse)
+     * Endpoint: POST /api/connections/{id}/respond
+     * Body: { "action": "accept" | "refuse" }
+     */
+    public function respondToRequest(Request $request, $id)
+    {
+        $request->validate([
+            'action' => 'required|in:accept,refuse',
+        ]);
+
+        $connection = Connection::findOrFail($id);
+        $authUser = Auth::user();
+
+        // Make sure the current user is part of this connection
+        if (! $connection->involves($authUser->id)) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        if ($connection->status !== 'requested') {
+            return response()->json(['message' => 'This connection request is no longer pending.'], 400);
+        }
+
+        // Accept or refuse logic
+        if ($request->action === 'accept') {
+            $connection->update(['status' => 'active']);
+            $msg = 'Connection accepted.';
+        } else {
+            $connection->update(['status' => 'refused']);
+            $msg = 'Connection refused.';
+        }
+
+        return response()->json(['message' => $msg], 200);
+    }
+
+    /**
+     * Deactivate or remove a connection
+     * Endpoint: DELETE /api/connections/{id}
+     */
+    public function removeConnection($id)
+    {
+        $authUser = Auth::user();
+        $connection = Connection::findOrFail($id);
+
+        if (! $connection->involves($authUser->id)) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        $connection->update(['status' => 'deactivated']);
+
+        return response()->json(['message' => 'Connection deactivated.'], 200);
+    }
+
+    /**
+     * List all current connections for the logged-in user.
+     * Endpoint: GET /api/connections
+     */
+    // public function index()
+    // {
+    //     $authUser = Auth::user();
+
+    //     $connections = Connection::where(function ($q) use ($authUser) {
+    //         $q->where('user_a_id', $authUser->id)
+    //           ->orWhere('user_b_id', $authUser->id);
+    //     })->with(['userA', 'userB'])->get();
+
+    //     return response()->json($connections);
+    // }
+    public function index()
+    {
+        $authId = Auth::id();
+
+        return Connection::with(['userA', 'userB'])
+            ->where('user_a_id', $authId)
+            ->orWhere('user_b_id', $authId)
+            ->get();
+    }
+
+    public function indexWeb()
+    {
+        $authUser = auth()->user();
+
+        $connections = Connection::where(function($q) use ($authUser) {
+            $q->where('user_a_id', $authUser->id)
+            ->orWhere('user_b_id', $authUser->id);
+        })->with(['userA', 'userB'])->get();
+
+        
+        return response()->json($connections);
+    }
+
+
+
+
+
+
+
+
+    public function removeConnectionWeb($id)
+    {
+        $authUser = auth()->user();
+        $connection = Connection::findOrFail($id);
+
+        if (! $connection->involves($authUser->id)) {
+            return response()->json(['message' => 'Unauthorized.'], 403);
+        }
+
+        $connection->update(['status' => 'deactivated']);
+
+        return response()->json(['message' => 'Connection removed.']);
+    }
+
+}

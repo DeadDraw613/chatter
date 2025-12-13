@@ -1,0 +1,143 @@
+const otherUserId = window.otherUserId || 2; // fallback for testing
+
+// DO I KEEP THE ABOVE LINES?========================
+
+
+// 3️⃣ Key Notes
+// Sanctum cookies: credentials: 'include' ensures cookies are sent.
+// CSRF token: pulled from <meta name="csrf-token"> in Blade.
+// Hardcoded receiver: for testing, we fetch messages with user_id = 2. Later you can build a users list.
+// Polling: messages reload every 3s. Can be replaced by websockets later.
+
+// Enable fetch to send cookies for Sanctum
+// const API_BASE = '/api';
+const API_BASE = 'http://192.168.59.131:8000/api';
+
+// const API_BASE = '';
+const appDiv = document.getElementById('app');
+
+// Simple helper to render HTML
+function render(html) {
+    appDiv.innerHTML = html;
+}
+
+// Check if user is logged in
+async function getUser() {
+    try {
+        const res = await fetch(`${API_BASE}/user`, { credentials: 'include' });
+        if (!res.ok) return null;
+        return await res.json();
+    } catch {
+        return null;
+    }
+}
+
+// Login form submission
+async function login(email, password) {
+    const token = document.querySelector('meta[name="csrf-token"]').content;
+    const res = await fetch(`${API_BASE}/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token
+        },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+    });
+
+    return res.ok;
+}
+
+// Logout
+async function logout() {
+    const token = document.querySelector('meta[name="csrf-token"]').content;
+    await fetch(`${API_BASE}/logout`, {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': token },
+        credentials: 'include'
+    });
+    init();
+}
+
+// Fetch messages
+async function fetchMessages(withUserId) {
+    const res = await fetch(`${API_BASE}/messages/${withUserId}`, { credentials: 'include' });
+    // if (!res.ok) return [];
+    if (!res.ok) throw new Error('Error loading messages: HTTP ' + res.status);
+    return await res.json();
+}
+
+// Send message
+async function sendMessage(receiverId, text) {
+    const token = document.querySelector('meta[name="csrf-token"]').content;
+    const res = await fetch(`${API_BASE}/messages`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': token
+        },
+        credentials: 'include',
+        body: JSON.stringify({ receiver_id: receiverId, message: text })
+    });
+    return res.ok;
+}
+
+// Render chat UI
+function renderChat(user, messages) {
+    let html = `
+        <h2>Logged in as ${user.email} <button id="logoutBtn">Logout</button></h2>
+        <div id="chatBox" style="border:1px solid #ccc;height:300px;overflow-y:auto;padding:10px;margin-bottom:10px;">
+            ${messages.map(m => `
+                <div style="margin-bottom:5px; ${m.sender_id === user.id ? 'text-align:right;' : ''}">
+                    <strong>${m.sender_id === user.id ? 'You' : 'Them'}:</strong> ${m.message || ''}
+                    ${m.image_path ? `<img src="/storage/${m.image_path}" style="max-width:100px;display:block;margin-top:2px;">` : ''}
+                </div>
+            `).join('')}
+        </div>
+        <input type="text" id="msgInput" placeholder="Type a message..." style="width:70%;">
+        <button id="sendBtn">Send</button>
+    `;
+    render(html);
+
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    document.getElementById('sendBtn').addEventListener('click', async () => {
+        const text = document.getElementById('msgInput').value;
+        if (!text) return;
+        await sendMessage(otherUserId, text);
+        init(); // reload messages
+    });
+}
+
+// Render login form
+function renderLogin() {
+    render(`
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email"><br><br>
+        <input type="password" id="password" placeholder="Password"><br><br>
+        <button id="loginBtn">Login</button>
+    `);
+
+    document.getElementById('loginBtn').addEventListener('click', async () => {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const ok = await login(email, password);
+        if (ok) init();
+        else alert('Login failed');
+    });
+}
+
+// Initialize SPA
+async function init() {
+    const user = await getUser();
+    if (!user) {
+        renderLogin();
+    } else {
+        const messages = await fetchMessages(otherUserId);
+        renderChat(user, messages);
+
+        // Poll messages every 3 seconds
+        setTimeout(init, 3000);
+    }
+}
+
+init();

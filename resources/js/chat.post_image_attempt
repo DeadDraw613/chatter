@@ -1,0 +1,313 @@
+// resources/js/chat.js
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🧠 DOMContentLoaded fired for chat.js');
+
+    const sendBtn = document.getElementById('sendBtn');
+    const msgInput = document.getElementById('msgInput');
+    const messagesDiv = document.getElementById('messages');
+    if (!sendBtn || !msgInput || !messagesDiv) return;
+
+    const token = document.querySelector('meta[name="csrf-token"]').content;
+
+    const receiverId = window.otherUserId;
+    const currentUserId = window.currentUserId;
+    
+    sendBtn.addEventListener('click', sendMessage);
+    msgInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+
+
+    let lastMessageId = 0;
+    let pollingTimer = null;
+
+    // Append new messages only
+    function appendMessages(messages) {
+        messagesDiv.innerHTML = '';
+        messages.forEach(m => {
+            const div = document.createElement('div');
+            div.className = `flex ${m.sender_id === currentUserId ? 'justify-end' : 'justify-start'}`;
+
+            const inner = document.createElement('div');
+            inner.className = `px-3 py-2 rounded-lg max-w-xs ${
+                m.sender_id === currentUserId ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700'
+            }`;
+
+            if (m.message) inner.innerHTML += `<div>${m.message}</div>`;
+            if (m.image_path) {
+                inner.innerHTML += `
+                    <img src="/storage/${m.image_path}" 
+                        class="mt-2 w-24 h-24 object-cover rounded cursor-pointer hover:opacity-80"
+                        onclick="openImageModal('/storage/${m.image_path}')">
+                `;
+            }
+
+            div.appendChild(inner);
+            messagesDiv.appendChild(div);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+
+    // Fetch new messages since lastMessageId
+    async function fetchMessages() {
+        //First "Chat bubble" loading happening before here
+        try {
+            const res = await fetch(`/api/messages/${receiverId}`, { credentials: 'include' });
+            if (!res.ok) throw new Error('Error fetching messages');
+            const data = await res.json();
+
+            // Filter only new messages
+            const newMessages = data.filter(m => m.id > lastMessageId);
+            console.error('🧠🧠🧠 fetchMessages Data', newMessages);
+            if (newMessages.length > 0) {
+                appendMessages(newMessages);
+                lastMessageId = Math.max(...data.map(m => m.id));
+            }
+        } catch (err) {
+            console.error('Fetch error', err);
+        }
+    }
+
+    // Send message
+    async function sendMessage() {
+        const text = msgInput.value.trim();
+        const fileInput = document.getElementById('imageInput');
+        const file = fileInput ? fileInput.files[0] : null;
+
+        // stop if both fields are empty
+        if (!text && !file) return;
+
+        const formData = new FormData();
+        formData.append('receiver_id', receiverId);
+        if (text) formData.append('message', text);
+        if (file) formData.append('image', file);
+
+        try {
+            const res = await fetch('/api/messages', {
+                method: 'POST',
+                credentials: 'include',
+                body: formData, // no JSON headers!
+            });
+
+            if (!res.ok) throw new Error('Error sending message');
+
+            msgInput.value = '';
+            if (fileInput) fileInput.value = ''; // reset file input
+
+            fetchMessages();
+        } catch (err) {
+            console.error('Message send failed:', err);
+        }
+    }
+
+
+    // Initial load
+    // Immediately Invoked Function Expression (IIFE)
+    // the async IIFE immediately executes, fetches data from an API, and logs 
+    // it to the console, all while maintaining a clear, sequential flow thanks to 'await'.
+    // The final pair of "()" in this statement "(async () => {...})();" is what makes it an IIFE
+    (async () => {
+        try {
+            const res = await fetch(`/api/messages/${receiverId}`, { credentials: 'include' });
+            const data = await res.json();
+            console.log('Fetched data:', data);
+            appendMessages(data);
+            if (data.length > 0) lastMessageId = Math.max(...data.map(m => m.id));
+            // Start polling
+            pollingTimer = setInterval(fetchMessages, 3000);
+        } catch (err) {
+            console.error('Initial fetch error', err);
+        }
+    })();
+});
+
+
+
+
+// // resources/js/chat.js
+
+// resources/js/chat.js
+
+
+// document.addEventListener('DOMContentLoaded', () => {
+
+//     console.log('🧠 DOMContentLoaded fired for chat.js');
+//     console.log('🔥 chat.js loaded at', new Date().toLocaleTimeString());
+
+
+//     const sendBtn = document.getElementById('sendBtn');
+//     const msgInput = document.getElementById('msgInput');
+//     const messagesDiv = document.getElementById('messages');
+
+//     if (!sendBtn || !msgInput || !messagesDiv) return;
+
+//     const token = document.querySelector('meta[name="csrf-token"]').content;
+//     const receiverId = window.otherUserId;
+//     const currentUserId = window.currentUserId;
+
+//     let lastMessageId = 0;
+//     let pollingTimer = null;
+
+//     let fetchCount = 0;
+//     async function fetchMessages() {
+//         fetchCount++;
+//         console.log('FetchMessages call #', fetchCount, new Date().toLocaleTimeString());
+//         try {
+//             const res = await fetch(`/api/messages/${receiverId}`, { credentials: 'include' });
+//             if (!res.ok) throw new Error('Error fetching messages');
+//             const data = await res.json();
+//             renderMessages(data);
+//         } catch (err) {
+//             console.error('Fetch error', err);
+//         }
+//     }
+
+//     // --- Fetch only new messages since lastMessageId ---
+//     // async function fetchMessages() {
+//     //     fetchCount++;
+//     //     console.log('FetchMessages call #', fetchCount, new Date().toLocaleTimeString());
+//     //     try {
+//     //         const res = await fetch(`/api/messages/${receiverId}`, { credentials: 'include' });
+//     //         if (!res.ok) throw new Error('Error fetching messages');
+//     //         const data = await res.json();
+
+//     //         // Filter new messages only
+//     //         const newMessages = data.filter(m => m.id > lastMessageId);
+            
+//     //         //debug flicker
+//     //         // console.log("Fetching new messages at:", new Date().toLocaleTimeString());
+
+//     //         if (newMessages.length > 0) {
+//     //             appendMessages(newMessages);
+//     //             lastMessageId = Math.max(...data.map(m => m.id));
+//     //         }
+//     //     } catch (err) {
+//     //         console.error('Fetch error:', err);
+//     //         if (!messagesDiv.innerHTML.trim()) {
+//     //             messagesDiv.innerHTML = `<p class="text-red-500">${err.message}</p>`;
+//     //         }
+//     //     }
+//     // }
+
+//     // --- Append only new messages (no flicker) ---
+//     function appendMessages(messages) {
+
+//         // Debug flicker
+//         // console.log("Fetching new messages at:", new Date().toLocaleTimeString());
+//         console.log('Rendering messages...', messages.length);
+
+//         messages.forEach(m => {
+//             const div = document.createElement('div');
+//             div.className = `flex ${m.sender_id === currentUserId ? 'justify-end' : 'justify-start'}`;
+//             div.innerHTML = `
+//                 <div class="px-3 py-2 rounded-lg max-w-xs ${
+//                     m.sender_id === currentUserId ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700'
+//                 }">
+//                     ${m.message}
+//                 </div>
+//             `;
+//             messagesDiv.appendChild(div);
+//         });
+//         messagesDiv.scrollTop = messagesDiv.scrollHeight;
+//     }
+
+//     // --- Send message ---
+//     async function sendMessage() {
+//         const text = msgInput.value.trim();
+//         if (!text) return;
+
+//         await fetch(`/api/messages`, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRF-TOKEN': token
+//             },
+//             credentials: 'include',
+//             body: JSON.stringify({ receiver_id: receiverId, message: text })
+//         });
+
+//         msgInput.value = '';
+//         fetchMessages(); // pull fresh list immediately after sending
+//     }
+
+//     sendBtn.addEventListener('click', sendMessage);
+//     msgInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+
+//     // --- Initial load ---
+//     (async () => {
+//         const res = await fetch(`/api/messages/${receiverId}`, { credentials: 'include' });
+//         const data = await res.json();
+//         appendMessages(data);
+//         if (data.length > 0) lastMessageId = Math.max(...data.map(m => m.id));
+
+//         // Start polling (no flicker)
+//         pollingTimer = setInterval(fetchMessages, 3000);
+//     })();
+// });
+
+// FULL REWRITE FROM CHAT GPT REPLACES ABOVE =======================================
+
+
+// PRE POLLING-FLICKER VERSION BELOW
+// document.addEventListener('DOMContentLoaded', () => {
+//     const sendBtn = document.getElementById('sendBtn');
+//     const msgInput = document.getElementById('msgInput');
+//     const messagesDiv = document.getElementById('messages');
+
+//     //new additions
+//     let lastMessageId = 0;
+//     let pollingTimer = null;
+
+//     if (!sendBtn || !msgInput || !messagesDiv) return;
+
+//     const token = document.querySelector('meta[name="csrf-token"]').content;
+//     const receiverId = window.otherUserId;
+//     const currentUserId = window.currentUserId;
+
+//     async function fetchMessages() {
+//         try {
+//             const res = await fetch(`/api/messages/${receiverId}`, { credentials: 'include' });
+//             if (!res.ok) throw new Error('Error fetching messages');
+//             const data = await res.json();
+//             renderMessages(data);
+//         } catch (err) {
+//             messagesDiv.innerHTML = `<p class="text-red-500">${err.message}</p>`;
+//         }
+//     }
+
+//     function renderMessages(messages) {
+//         messagesDiv.innerHTML = messages.map(m => `
+//             <div class="flex ${m.sender_id === currentUserId ? 'justify-end' : 'justify-start'}">
+//                 <div class="px-3 py-2 rounded-lg max-w-xs ${
+//                     m.sender_id === currentUserId ? 'bg-indigo-600 text-white' : 'bg-gray-200 dark:bg-gray-700'
+//                 }">
+//                     ${m.message}
+//                 </div>
+//             </div>
+//         `).join('');
+//         messagesDiv.scrollTop = messagesDiv.scrollHeight;
+//     }
+
+
+//     async function sendMessage() {
+//         const text = msgInput.value.trim();
+//         if (!text) return;
+
+//         await fetch(`/api/messages`, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'X-CSRF-TOKEN': token
+//             },
+//             credentials: 'include',
+//             body: JSON.stringify({ receiver_id: receiverId, message: text })
+//         });
+//         msgInput.value = '';
+//         fetchMessages();
+//     }
+
+//     sendBtn.addEventListener('click', sendMessage);
+//     msgInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+
+//     fetchMessages();
+//     setInterval(fetchMessages, 3000);
+// });

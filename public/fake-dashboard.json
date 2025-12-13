@@ -1,0 +1,30 @@
+{
+  "stats": {
+    "users": 120,
+    "active_connections": 87,
+    "messages_sent": 540,
+    "errors": 3
+  },
+  "sales": [
+    { "month": "Jan", "value": 1200 },
+    { "month": "Feb", "value": 1500 },
+    { "month": "Mar", "value": 1700 },
+    { "month": "Apr", "value": 1400 },
+    { "month": "May", "value": 1800 },
+    { "month": "Jun", "value": 1200 },
+    { "month": "Jul", "value": 1500 },
+    { "month": "Aug", "value": 1700 },
+    { "month": "Sep", "value": 1550 },
+    { "month": "Oct", "value": 1800 },
+    { "month": "Nov", "value": 1700 },
+    { "month": "Dec", "value": 2100 }
+  ],
+  "users": [
+    { "name": "Sue", "email": "sue@sue.com", "role": "Admin", "status": "Active" },
+    { "name": "Bob", "email": "bob@bob.com", "role": "User", "status": "Inactive" },
+    { "name": "Doug", "email": "doug@doug.com", "role": "User", "status": "Active" },
+    { "name": "Dave", "email": "dave@dave.com", "role": "User", "status": "Active" },
+    { "name": "Dude", "email": "dude@dude.com", "role": "Admin", "status": "Active" },
+    { "name": "Mike", "email": "mike@mike.com", "role": "Admin", "status": "Active" }
+  ]
+}
