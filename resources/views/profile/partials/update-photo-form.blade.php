@@ -3,7 +3,6 @@
         <h2 class="text-lg font-medium text-gray-100">
             {{ __('Profile Picture') }}
         </h2>
-
         <p class="mt-1 text-sm text-gray-400">
             {{ __("Manage your profile photo.") }}
         </p>
@@ -24,8 +23,8 @@
         <div class="flex flex-col gap-3">
 
             {{-- Selected File Name --}}
-            <span id="profile-picture-filename" class="text-sm text-gray-500">
-                No image selected
+            <span id="profile-picture-filename" class="text-sm text-gray-500 hidden">
+                hh - No image selected
             </span>
 
             {{-- Hidden File Input --}}
@@ -133,7 +132,8 @@ async function saveProfilePicture() {
 
         // Reset selected file
         selectedProfileFile = null;
-        document.getElementById('profile-picture-filename').textContent = "No image selected";
+        // document.getElementById('profile-picture-filename').textContent = "No image selected";
+        document.getElementById('profile-picture-filename').textContent = "hh";
 
     } catch (error) {
         status.textContent = "Upload error.";
