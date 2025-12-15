@@ -6,6 +6,15 @@ The project is intentionally used as a **learning and testing platform**, rather
 
 ---
 
+
+```
+git clone git@github.com:yourusername/chatter.git
+cd chatter
+```
+Make sure to use SSH (or HTTPS with a personal access token) for push/pull access.
+
+
+---
 ## ✨ Project Goals
 
 * Build and maintain a real-world Laravel SPA from scratch
