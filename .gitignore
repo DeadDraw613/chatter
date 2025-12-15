@@ -24,9 +24,11 @@ Thumbs.db
 /public/build/
 
 # Uploads (user-generated content)
+# Ignore everything in uploads
 /public/uploads/*
-!/public/uploads/.gitkeep
-!/public/uploads/profile/.gitkeep
+# But do track .gitkeep files anywhere inside uploads
+!/public/uploads/**/*.gitkeep
+
 
 # Testing / misc
 npm-debug.log*
