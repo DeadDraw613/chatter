@@ -5,13 +5,48 @@ Chatter is a self-directed full‑stack Laravel single‑page application (SPA) 
 The project is intentionally used as a **learning and testing platform**, rather than a production product, and is regularly modified to support experimentation with authentication flows, API endpoints, and common web security scenarios.
 
 ---
+# Configuration
 
-
+### Clone
 ```
 git clone git@github.com:yourusername/chatter.git
 cd chatter
 ```
 Make sure to use SSH (or HTTPS with a personal access token) for push/pull access.
+
+### Dependancies
+```
+cp .env.example .env
+php artisan key:generate
+npm install
+npm run build  //for prroduction
+npm run dev    //for active dev
+```
+
+User-uploaded files (profile images, message attachments) are not tracked in Git.
+- To keep the directories in Git without tracking files, .gitkeep placeholders are used.
+- .gitignore includes:
+```
+/public/uploads/*
+!/public/uploads/.gitkeep
+!/public/uploads/profile/.gitkeep
+```
+Git workflow for keeping directory structure without content files
+```
+git rm -r --cached public/uploads
+git add public/uploads/.gitkeep public/uploads/profile/.gitkeep
+git commit -m "Remove user-uploaded images from repo; preserve directory structure"
+git push
+```
+### Serve App in Dev Server
+```
+php artisan serve --host=0.0.0.0 --port=8000
+```
+### Access app on lab server
+```
+http://192.168.70.89
+```
+
 
 
 ---
