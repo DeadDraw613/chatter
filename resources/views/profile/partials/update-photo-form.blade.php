@@ -23,8 +23,9 @@
         <div class="flex flex-col gap-3">
 
             {{-- Selected File Name --}}
-            <span id="profile-picture-filename" class="text-sm text-gray-500 hidden">
-                hh - No image selected
+            <span id="profile-picture-filename" class="text-sm text-gray-500">
+            <!-- <span id="profile-picture-filename" class="text-sm text-gray-500 hidden"> -->
+                No image selected
             </span>
 
             {{-- Hidden File Input --}}
@@ -39,6 +40,7 @@
             {{-- Main Action Button --}}
             <button
                 id="profile-picture-action-btn"
+                data-test-id="profile-photo-button"
                 type="button"
                 class="px-4 py-2 text-white bg-gray-600 rounded-md hover:bg-gray-700 transition"
                 onclick="document.getElementById('profile-picture-input').click();"
@@ -133,7 +135,7 @@ async function saveProfilePicture() {
         // Reset selected file
         selectedProfileFile = null;
         // document.getElementById('profile-picture-filename').textContent = "No image selected";
-        document.getElementById('profile-picture-filename').textContent = "hh";
+        document.getElementById('profile-picture-filename').textContent = "TBFT";
 
     } catch (error) {
         status.textContent = "Upload error.";
