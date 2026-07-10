@@ -2,7 +2,9 @@
 
 This directory contains the Quality Assurance tooling developed for the Chatter application.
 
-The goal is to simulate a production QA environment by providing automated UI testing, API validation, test utilities, security regression testing, and CI/CD integration.
+## Why I built this
+
+This framework was developed as a practical exercise in modern QA engineering. Rather than simply writing automated tests, the goal was to build a maintainable, production-style automation framework using Playwright, GitHub, Page Object Models, reusable fixtures, API validation, CI/CD, and supporting QA utilities. The project mirrors the workflow and practices commonly used by professional software development teams.
 
 #### Roadmap
 
