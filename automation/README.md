@@ -6,6 +6,12 @@ This directory contains the Quality Assurance tooling developed for the Chatter 
 
 This framework was developed as a practical exercise in modern QA engineering. Rather than simply writing automated tests, the goal was to build a maintainable, production-style automation framework using Playwright, GitHub, Page Object Models, reusable fixtures, API validation, CI/CD, and supporting QA utilities. The project mirrors the workflow and practices commonly used by professional software development teams.
 
+```mermaid
+graph LR
+    A[Lab Server] -- Git Push --> B((Github)) 
+    B -- Git Pull --> D[Dev VM]
+```
+
 #### Roadmap
 
 - [x] Initialize Playwright
