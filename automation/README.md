@@ -4,6 +4,19 @@ This directory contains the Quality Assurance tooling developed for the Chatter 
 
 The goal is to simulate a production QA environment by providing automated UI testing, API validation, test utilities, security regression testing, and CI/CD integration.
 
+#### Roadmap
+
+- [x] Initialize Playwright
+- [ ] Login automation
+- [ ] Registration tests
+- [ ] Messaging regression suite
+- [ ] Image upload tests
+- [ ] Mobile layout validation
+- [ ] API verification
+- [ ] Database validation
+- [ ] GitHub Actions pipeline
+- [ ] Security regression suite
+
 ## Current Components
 
 ### Playwright
