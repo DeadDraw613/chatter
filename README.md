@@ -1,5 +1,7 @@
 # Chatter
 
+<img width="867" height="290" alt="Image" src="https://github.com/user-attachments/assets/8cab37de-7334-4e5d-8fc9-1c4a176406ae" />
+
 Chatter is a self-directed full‑stack Laravel single‑page application (SPA) built as part of a homelab environment to explore web application development, API design, and security testing.
 
 The project is intentionally used as a **learning and testing platform**, rather than a production product, and is regularly modified to support experimentation with authentication flows, API endpoints, and common web security scenarios.
