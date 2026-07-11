@@ -1,7 +1,6 @@
 # Chatter QA Automation Framework
 
-<img width="867" height="290" alt="Image" src="https://github.com/user-attachments/assets/8cab37de-7334-4e5d-8fc9-1c4a176406ae" />
-
+<img width="1038" height="349" alt="Image" src="https://github.com/user-attachments/assets/0db2400b-c179-48c7-a761-9104432f28df" />
 
 This directory contains the Quality Assurance tooling developed for the Chatter application.
 
