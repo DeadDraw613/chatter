@@ -12,6 +12,8 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  timeout: 30_000,
+  globalTimeout: 10 * 60 * 1000,
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -25,29 +27,41 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
-
-    /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
-  },
+      /* Base URL to use in actions like `await page.goto('/')`. */
+      baseURL: "192.168.59.131:8000/",
+      testIdAttribute: "data-test",
+      /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
+      trace: "on",
+      actionTimeout: 0,
+      ignoreHTTPSErrors: true,
+      video: "retain-on-failure",
+      screenshot: "only-on-failure",
+      // video: "on",
+      // screenshot: "on",
+      headless: true,
+    },
 
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "setup",
+      testMatch: /.*\.setup\.ts/,
+    },
+    {
+      name: "chromium",
+      dependencies: ["setup"],
+      use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     /* Test against mobile viewports. */
     // {
