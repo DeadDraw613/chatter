@@ -2,17 +2,103 @@
 
 <img width="1038" height="349" alt="Image" src="https://github.com/user-attachments/assets/0db2400b-c179-48c7-a761-9104432f28df" />
 
-Chatter is a self-directed full‑stack Laravel single‑page application (SPA) built as part of a homelab environment to explore web application development, API design, and security testing.
+---
 
-The project is intentionally used as a **learning and testing platform**, rather than a production product, and is regularly modified to support experimentation with authentication flows, API endpoints, and common web security scenarios.
+> [!WARNING]
+> Chatter is a Laravel-based chat application built as a learning project. It is not currently intended for production use or third-party installation. There are known defects, security issues, and currently only hosted in a controlled lab environment
+
+### ToDo
+---
+
+- [x] Playwright Automation 
+- [ ] Postman API test examples 
+- [ ] Python Utilities and automation
+
+---
+
+<details>
+<summary>Click here to expand advanced logs</summary>
+
+```bash
+Error: Something broke behind the scenes.
+Traceback (most recent call last)...
+```
+</details>
+
+---
+
+Chatter is a full‑stack Laravel single‑page application (SPA) built as part of a homelab environment to explore web application development, API design, and security testing. The project is intentionally used as a **learning and testing platform**, rather than a production product, and is regularly modified to support experimentation with authentication flows, API endpoints, and common web security scenarios.
+
+1) Prerequisites
+2) Clone the repository
+3) Environment configuration (.env)
+4) Install dependencies (composer install, npm install)
+5) Build assets (npm run build)
+6) Database setup (migrations/seeders if applicable)
+7) Apache configuration
+8) Permissions
+9) Verification checklist
+10) Troubleshooting (common issues like vite: not found, permission errors, disk full, 302 redirects)
+
+
+### 1. Development Environment
+
+The development environment uses Laravel's built-in web server via php artisan serve. This is intended only for development and testing.
+
+#### Purpose:
+- Active development
+- Debugging
+- Vite hot reload (if desired)
+- Artisan server
+
+```
+composer install
+npm install
+cp .env.example .env
+php artisan migrate
+php artisan serve --host=192.168.59.131 --port=8000
+```
+
+### 2. Test / Lab Server
+
+#### Purpose:
+- Integration testing
+- Manual QA
+- Deployment verification
+
+```
+Apache
+PHP
+DocumentRoot -> /var/www/html/chatter/public
+```
+No Artisan serve command.
+Instead:
+```
+sudo systemctl status apache2
+# or
+sudo systemctl restart apache2
+```
 
 ---
 # Configuration
 
 ### Clone
 ```
-git clone git@github.com:yourusername/chatter.git
+git clone git@github.com:DeadDraw613/chatter.git
 cd chatter
+
+cp .env.example .env
+# or copy your existing .env
+
+composer install
+npm install
+npm run build
+
+php artisan key:generate   # only for a brand-new environment
+php artisan migrate
+
+sudo chown -R www-data:www-data storage bootstrap/cache public/uploads
+sudo chmod -R 775 storage bootstrap/cache public/uploads
 ```
 Make sure to use SSH (or HTTPS with a personal access token) for push/pull access.
 
