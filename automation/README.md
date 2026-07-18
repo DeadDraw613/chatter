@@ -2,64 +2,50 @@
 
 <img width="1038" height="349" alt="Image" src="https://github.com/user-attachments/assets/0db2400b-c179-48c7-a761-9104432f28df" />
 
-This directory contains the Quality Assurance tooling developed for the Chatter application.
+## Project Status
 
-## Why I built this
+> [!WARNING]
+> Chatter is a Laravel-based chat application built as a learning project. It is not currently intended for production use or third-party installation. There are known defects, security issues, and currently only hosted in a controlled lab environment
+ 
+🚧 Active development
 
-This framework was developed as a practical exercise in modern QA engineering. Rather than simply writing automated tests, the goal was to build a maintainable, production-style automation framework using Playwright, GitHub, Page Object Models, reusable fixtures, API validation, CI/CD, and supporting QA utilities. The project mirrors the workflow and practices commonly used by professional software development teams.
+This automation framework is being built as a learning and experimentation project.
 
-```mermaid
-graph LR
-    A[Lab Server] -- Git Push --> B((Github)) 
-    B -- Git Pull --> D[Dev VM]
-```
+The goal is to explore and implement modern QA engineering practices, including UI automation, API testing, test data management, security validation, and CI/CD integration.
 
-#### Roadmap
+This repository is not intended to be a production-ready automation framework or a plug-and-play test solution. Components will be added and refined over time as different testing approaches are explored.
 
-- [x] Initialize Playwright
-- [ ] Login automation
-- [ ] Registration tests
-- [ ] Messaging regression suite
-- [ ] Image upload tests
-- [ ] Mobile layout validation
-- [ ] API verification
-- [ ] Database validation
-- [ ] GitHub Actions pipeline
-- [ ] Security regression suite
+---
 
-## Current Components
+## Implementation Roadmap
 
-### Playwright
-- End-to-end UI automation
-- Smoke tests
-- Regression suites
-- Page Object Model
-- Fixtures
-- Authentication helpers
+### Test Automation
+- [x] Initialize Playwright framework
+- [x] Create Playwright configuration and environment management
+- [ ] Implement authentication tests
+- [ ] Add Page Object Model structure
+- [ ] Build reusable test fixtures
+- [ ] Create smoke test suite
+- [ ] Create regression test suite
 
-### Python
-- Test data generation
-- Database verification
-- Utility scripts
+### API Testing
+- [ ] Create Postman collections
+- [ ] Add API authentication testing
+- [ ] Add API regression scenarios
+- [ ] Explore automated API validation
 
-### Postman
-- API collections
-- Environment files
-- Authentication testing
+### Test Data & Utilities
+- [ ] Python utility scripts
+- [ ] Test data generation tools
+- [ ] Database validation utilities
 
-### Security
-- Burp Suite notes
-- Security regression tests
-- OWASP testing
+### CI/CD
+- [ ] GitHub Actions integration
+- [ ] Automated test execution
+- [ ] Test reporting
+- [ ] Failure artifact collection
 
-### Performance
-- Performance and load testing (planned)
-
-## Technology Stack
-
-- Playwright
-- TypeScript
-- Python
-- Postman
-- GitHub Actions
-- Git
+### Security & Performance
+- [ ] Security regression testing
+- [ ] OWASP testing scenarios
+- [ ] Performance testing exploration
