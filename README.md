@@ -7,27 +7,34 @@
 > [!WARNING]
 > Chatter is a Laravel-based chat application built as a learning project. It is not currently intended for production use or third-party installation. There are known defects, security issues, and currently only hosted in a controlled lab environment
 
-### ToDo
----
+## Purpose
 
-- [x] Playwright Automation 
-- [ ] Postman API test examples 
-- [ ] Python Utilities and automation
+Chatter is a full‑stack Laravel single‑page application (SPA) built as part of a homelab environment to explore web application development, API design, and security testing. The project is intentionally used as a **learning and testing platform**, rather than a production product, and is regularly modified to support experimentation with authentication flows, API endpoints, and common web security scenarios.
 
----
+### Known Limitations
+
+This project is actively developed as a learning environment. Some areas intentionally remain experimental:
+
+- Database migrations and schema design may change as features are added or refactored.
+- Security controls have not been hardened for production deployment.
+- Deployment instructions are specific to my homelab environment.
+- Automated testing coverage is still being developed.
 
 <details>
-<summary>Click here to expand advanced logs</summary>
+<summary>Example troubleshooting notes</summary>
 
-```bash
-Error: Something broke behind the scenes.
-Traceback (most recent call last)...
-```
+Common issues encountered during development:
+
+- Missing Vite manifest after pulling changes
+- Composer dependency issues
+- File permission problems on Linux deployments
+- Environment configuration differences between systems
+
 </details>
 
 ---
 
-Chatter is a full‑stack Laravel single‑page application (SPA) built as part of a homelab environment to explore web application development, API design, and security testing. The project is intentionally used as a **learning and testing platform**, rather than a production product, and is regularly modified to support experimentation with authentication flows, API endpoints, and common web security scenarios.
+### Installation Steps
 
 1) Prerequisites
 2) Clone the repository
@@ -152,7 +159,7 @@ http://192.168.70.89
 
 * **Framework:** Laravel (PHP)
 * **Architecture:** Single Page Application (SPA)
-* **Authentication:** JWT-based authentication
+* **Authentication:** Laravel Breeze + Sanctum authentication
 * **API:** REST-style endpoints
 * **Database:** MySQL / MariaDB (local homelab)
 * **Hosting:** Virtualized Linux servers (ESXi)
@@ -174,9 +181,11 @@ Chatter is used to explore and understand common web application and API securit
 
 Testing and analysis tools used alongside the application include:
 
+* Playwright (UI and API automation)
 * Postman (manual and automated API testing)
-* Selenium (basic UI automation)
+* Burp Suite (Request/Response analysis) 
 * Wireshark (network traffic analysis)
+* tcpdump (TCP/IP traffic analysis)
 
 > ⚠️ **Note:** Vulnerabilities are tested only in isolated lab environments and intentionally vulnerable configurations.
 
