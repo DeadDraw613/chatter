@@ -14,7 +14,7 @@ test('test', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Password' }).fill('password');
   await page.getByRole('button', { name: 'Log in' }).click();
   await expect(page).toHaveTitle(
-    "dude",
+    "Dude",
   ); 
   
   await page.getByRole('link', { name: 'Chat' }).click();
@@ -34,6 +34,6 @@ test('test', async ({ page }) => {
 //   await page.locator('[data-test-id="profile-photo-button"]').click();
   await page.getByRole('link', { name: 'Chat' }).click();
   await page.getByRole('link', { name: 'Dave dave@dave.com' }).click();
-  await page.getByRole('button', { name: 'dude' }).click();
+  await page.getByRole('button', { name: 'Dude' }).click();
   await page.getByRole('link', { name: 'Log Out' }).click();
 });
