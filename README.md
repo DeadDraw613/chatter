@@ -7,6 +7,9 @@
 > [!WARNING]
 > Chatter is a Laravel-based chat application built as a learning project. It is not currently intended for production use or third-party installation. There are known defects, security issues, and currently only hosted in a controlled lab environment
 
+> [!NOTE]
+> This repository is maintained as a personal learning project. <br>External contributions and support requests are not currently being accepted.
+
 ## Purpose
 
 Chatter is a full‑stack Laravel single‑page application (SPA) built as part of a homelab environment to explore web application development, API design, and security testing. The project is intentionally used as a **learning and testing platform**, rather than a production product, and is regularly modified to support experimentation with authentication flows, API endpoints, and common web security scenarios.
