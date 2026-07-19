@@ -12,7 +12,7 @@
 
 ## Purpose
 
-Chatter is a full‑stack Laravel single‑page application (SPA) built as part of a homelab environment to explore web application development, API design, and security testing. The project is intentionally used as a **learning and testing platform**, rather than a production product, and is regularly modified to support experimentation with authentication flows, API endpoints, and common web security scenarios.
+Chatter is a full‑stack Laravel single‑page application (SPA) built as part of a homelab environment to explore web application development, API design, and security testing. The project is used as a **learning and testing platform**, rather than a production product, and is regularly modified to support experimentation with authentication flows, API endpoints, and common web security scenarios.
 
 ### Known Limitations
 
