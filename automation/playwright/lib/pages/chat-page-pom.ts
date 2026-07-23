@@ -12,8 +12,9 @@ export class ChatPage {
         this.connectionUserDoug = page.getByRole('link', { name: 'Doug doug@doug.com' });
         this.messageInputBox = page.getByRole('textbox', { name: 'Type your message...' });
         this.sendMessageButton = page.getByRole('button', { name: '📩' });    
-}
 
-//   await .fill('Playwright sent this message');
-//   await page.getByRole('button', { name: '📩' }).click();
-//   await expect(page.getByText('Playwright sent this message')).toBeVisible();
+        //   await .fill('Playwright sent this message');
+        //   await page.getByRole('button', { name: '📩' }).click();
+        //   await expect(page.getByText('Playwright sent this message')).toBeVisible();
+    }
+}
