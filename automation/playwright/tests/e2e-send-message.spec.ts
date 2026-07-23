@@ -2,6 +2,11 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from '../lib/pages/login-page-pom';
 import { ChatPage } from '../lib/pages/chat-page-pom';
 
+
+// ToDo - verify background color of text (verify sender vs reciever)
+// blue: rgb(79, 70, 229)
+// grey: rgb(55, 65, 81)
+
 test('End-to-end send message worflow', async ({ page }) => {
 
   const loginPage = new LoginPage(page);
@@ -33,8 +38,16 @@ test('End-to-end send message worflow', async ({ page }) => {
   await test.step("Step 4. Send message to Doug", async () => {
     await chatPage.messageInputBox.fill('Playwright generated message');
     await chatPage.sendMessageButton.click();
-    //verify message is in the sent column (background color)
     await expect(page.locator('#messages')).toContainText('Playwright generated message');
+    //verify message is in the sent column (background color)
+    // note the '.last()' to target the most recent and bypass the locator resolution error
+    const messageDiv = page.locator('#messages div', { hasText: 'Playwright generated message'}).last();
+    await expect(messageDiv).toBeVisible();
+    //receiver
+    // await expect(messageDiv).toHaveCSS('background-color', 'rgb(55, 65, 81)');
+    //sender
+    await expect(messageDiv).toHaveCSS('background-color', 'rgb(79, 70, 229)');
+
   });
   console.log('✅ Step 4 completed successfully');
 
