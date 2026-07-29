@@ -47,3 +47,29 @@ yarn-error.log*
 /.zed
 /auth.json
 
+#python -----------------------------------------------
+# Python virtual environment
+automation/python/.venv/
+
+# Python cache
+automation/python/__pycache__/
+automation/python/**/*.pyc
+
+# Pytest cache
+automation/python/.pytest_cache/
+
+# Ruff cache
+automation/python/.ruff_cache/
+
+# mypy cache
+automation/python/.mypy_cache/
+
+# Coverage
+automation/python/.coverage
+automation/python/htmlcov/
+
+# Environment variables
+automation/python/.env
+
+# IDE
+automation/python/.vscode/

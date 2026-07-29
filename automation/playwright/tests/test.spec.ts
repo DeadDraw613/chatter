@@ -18,13 +18,14 @@ test('test', async ({ page }) => {
   ); 
   
   await page.getByRole('link', { name: 'Chat' }).click();
-//   await page.getByRole('link', { name: 'doug doug@doug.com' }).click();
   await page.getByRole('link', { name: 'Dave dave@dave.com' }).click();
   await page.getByRole('img').filter({ hasText: /^$/ }).nth(5).click();
+
+  // The following is chat specific and will fail of course 
+  // There needs to be a datafactpry to generate known content
   await page.locator('#lightbox-img').click();
   await expect(page.getByText('What are those squirrels')).toBeVisible()
   
-
   await page.getByRole('button', { name: 'dude' }).click();
   await page.getByRole('link', { name: 'Profile' }).click();
 
