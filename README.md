@@ -1,6 +1,6 @@
 # Chatter
 
-<img width="1038" height="349" alt="Image" src="https://github.com/user-attachments/assets/0db2400b-c179-48c7-a761-9104432f28df" />
+<img width="1672" height="941" alt="read_me" src="https://github.com/user-attachments/assets/f0a26d3e-ffe5-44d7-9f04-301b38983967" />
 
 ---
 
