@@ -1,6 +1,6 @@
 # Chatter QA Automation Framework
 
-<img width="1038" height="349" alt="Image" src="https://github.com/user-attachments/assets/0db2400b-c179-48c7-a761-9104432f28df" />
+<img width="1692" height="930" alt="automation" src="https://github.com/user-attachments/assets/07bbeafe-7d61-44f6-a42a-7d4e5f89a981" />
 
 ## Project Status
 
@@ -22,14 +22,15 @@ This repository is not intended to be a production-ready automation framework or
 ### Test Automation
 - [x] Initialize Playwright framework
 - [x] Create Playwright configuration and environment management
-- [ ] Implement authentication tests
-- [ ] Add Page Object Model structure
+- [x] Create Python configuration and environment management
+- [x] Implement authentication tests - in progress
+- [x] Add Page Object Model structure - in progress
 - [ ] Build reusable test fixtures
 - [ ] Create smoke test suite
 - [ ] Create regression test suite
 
 ### API Testing
-- [ ] Create Postman collections
+- [x] Create Postman collections - in progress (scripted with newman currently)
 - [ ] Add API authentication testing
 - [ ] Add API regression scenarios
 - [ ] Explore automated API validation
