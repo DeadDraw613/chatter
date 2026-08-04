@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
-import { LoginPage } from '../lib/pages/login-page-pom';
-import { ChatPage } from '../lib/pages/chat-page-pom';
+import { LoginPage } from '../../lib/pages/login-page-pom';
+import { ChatPage } from '../../lib/pages/chat-page-pom';
 
 
 // ToDo - verify background color of text (verify sender vs reciever)
