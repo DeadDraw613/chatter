@@ -19,6 +19,23 @@ This repository is not intended to be a production-ready automation framework or
 
 ## Implementation Roadmap
 
+```mermaid
+flowchart LR
+    A["Chatter Application"]
+
+    B["Playwright UI Tests"]
+    C["Python Utilities"]
+    D["Postman API Tests"]
+
+    E[("MySQL")]
+
+    B --> A
+    C --> A
+    D --> A
+
+    A --> E
+```
+
 ### Test Automation
 - [x] Initialize Playwright framework
 - [x] Create Playwright configuration and environment management

@@ -10,6 +10,26 @@
 > [!NOTE]
 > This repository is maintained as a personal learning project. <br>External contributions and support requests are not currently being accepted.
 
+```mermaid
+flowchart TD
+    A["Browser<br/>(Laravel Blade)"]
+    B["Laravel 12 Application"]
+    
+    C["Authentication<br/>(Sanctum)"]
+    D["REST API<br/>/api/*"]
+    E["Image Uploads<br/>/public/uploads"]
+    
+    F[("MySQL Database")]
+
+    A -->|"HTTPS"| B
+
+    B --> C
+    B --> D
+    B --> E
+
+    C --> F
+    D --> F
+```
 ## Purpose
 
 Chatter is a full‑stack Laravel single‑page application (SPA) built as part of a homelab environment to explore and implement modern QA engineering practices, including UI automation, API testing, test data management, security validation, and CI/CD integration. The project is used as a **learning and testing platform**, rather than a production product, and is regularly modified to support experimentation with authentication flows, API endpoints, and common web security scenarios.
