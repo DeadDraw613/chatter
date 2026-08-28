@@ -10,8 +10,13 @@ require __DIR__.'/auth.php';
 
 Route::get('/', function () {
     // return view('welcome');
-    // return redirect()->route('dashboard'); // or home page
-    return auth()->check() ? redirect('/dashboard') : view('welcome');
+    if (! auth()->check()) {
+        return view('welcome');
+    }
+
+    return auth()->user()->can('viewDashboard')
+        ? redirect()->route('dashboard')
+        : redirect()->route('chat');
 });
 
 // Route::get('/', function () {
@@ -20,7 +25,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'can:viewDashboard'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,7 +35,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/chat/{user}', [ChatPageController::class, 'show'])->middleware('auth');
 
-Route::get('/chat', [ChatPageController::class, 'index'])->middleware('auth');
+Route::get('/chat', [ChatPageController::class, 'index'])->middleware('auth')->name('chat');
 
 // Route::post('/upload-image', [ImageController::class, 'uploadImage'])->name('upload.image');
 

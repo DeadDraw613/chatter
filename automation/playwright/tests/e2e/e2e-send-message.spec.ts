@@ -17,7 +17,7 @@ test('End-to-end send message worflow', async ({ page }) => {
     await loginPage.emailLocator.fill("dude@dude.com");
     await loginPage.passwordLocator.fill("password");
     await loginPage.signInButtonLocator.click();
-    expect(page.url()).toContain('dashboard');
+    expect(page.url()).toContain('chat');
   });
   console.log('✅ Step 1 completed successfully');
 
