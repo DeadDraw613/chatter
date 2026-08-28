@@ -36,14 +36,32 @@
     </form>
 
  
-    <div class="flex h-[91vh]">
+    <div class="relative flex h-[91vh] overflow-hidden">
 
     <!-- Sidebar -->
-        <aside class="w-68 bg-gray-800 border-r border-gray-700 flex flex-col">
+        <aside id="connections-drawer"
+               class="absolute inset-y-0 left-0 z-40 flex w-72 max-w-[85vw] -translate-x-full flex-col border-r border-gray-700 bg-gray-800 transition-transform duration-300 ease-in-out sm:relative sm:inset-auto sm:z-auto sm:w-68 sm:max-w-none sm:translate-x-0 sm:transition-none"
+               aria-label="Connections">
+            <div class="flex items-center justify-between border-b border-gray-700 px-4 py-3 sm:hidden">
+                <h2 class="font-semibold text-gray-200">Connections</h2>
+                <button type="button"
+                        id="closeConnectionsBtn"
+                        class="rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        aria-label="Close connections">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
             <ul id="sidebar-users" class="flex-1 overflow-y-auto">
                 {{-- Connections will be injected here --}}
             </ul>
         </aside>
+
+        <button type="button"
+                id="connectionsBackdrop"
+                class="absolute inset-0 z-30 hidden bg-black/50 sm:hidden"
+                aria-label="Close connections"></button>
 
        <!-- Hidden form field to store the image path -->
         <input type="hidden" id="imagePath" name="image_path">
@@ -51,17 +69,26 @@
 
     <!-- Chat area -->
         <section class="flex-1 flex flex-col min-w-0">
-            @if($otherUser)
-                <!-- Header -->
-                <div class="border-b flex items-center text-xl font-semibold text-gray-300">
-
-
-                    <!-- Text container -->
+            <div class="flex items-center border-b border-gray-700 text-xl font-semibold text-gray-300">
+                <button type="button"
+                        id="connectionsMenuBtn"
+                        class="relative z-50 inline-flex items-center justify-center rounded-md p-3 text-gray-300 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-400 sm:hidden"
+                        aria-controls="connections-drawer"
+                        aria-expanded="false"
+                        aria-label="Open connections">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                @if($otherUser)
                     <div class="p-4">
                         Chat with {{ $otherUser->name }}
                     </div>
-                </div>
-
+                @else
+                    <div class="p-4">Chat</div>
+                @endif
+            </div>
+            @if($otherUser)
                 <!-- Scrollable message area -->
                 <div id="messages"
                      class="flex-1 overflow-y-auto space-y-2 bg-gray-900 p-3 rounded-md">
@@ -112,7 +139,32 @@
     document.addEventListener('DOMContentLoaded', () => {
 
         const sidebar = document.getElementById('sidebar-users');
+        const connectionsDrawer = document.getElementById('connections-drawer');
+        const connectionsMenuBtn = document.getElementById('connectionsMenuBtn');
+        const closeConnectionsBtn = document.getElementById('closeConnectionsBtn');
+        const connectionsBackdrop = document.getElementById('connectionsBackdrop');
         const authId = {{ auth()->id() }};
+
+        function setConnectionsDrawerOpen(isOpen) {
+            connectionsDrawer.classList.toggle('-translate-x-full', !isOpen);
+            connectionsDrawer.classList.toggle('translate-x-0', isOpen);
+            connectionsBackdrop.classList.toggle('hidden', !isOpen);
+            connectionsMenuBtn.setAttribute('aria-expanded', String(isOpen));
+            connectionsMenuBtn.setAttribute('aria-label', isOpen ? 'Close connections' : 'Open connections');
+        }
+
+        connectionsMenuBtn.addEventListener('click', () => {
+            const isOpen = connectionsMenuBtn.getAttribute('aria-expanded') === 'true';
+            setConnectionsDrawerOpen(!isOpen);
+        });
+        closeConnectionsBtn.addEventListener('click', () => setConnectionsDrawerOpen(false));
+        connectionsBackdrop.addEventListener('click', () => setConnectionsDrawerOpen(false));
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape') setConnectionsDrawerOpen(false);
+        });
+        sidebar.addEventListener('click', event => {
+            if (event.target.closest('a[href^="/chat/"]')) setConnectionsDrawerOpen(false);
+        });
 
         // ------------------------------------------------------------
         // 📌 LOAD CONNECTIONS INTO SIDEBAR
