@@ -27,7 +27,28 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
+        $response->assertRedirect(route('chat', absolute: false));
+    }
+
+    public function test_admin_can_authenticate_to_the_dashboard(): void
+    {
+        $admin = User::factory()->create(['email' => 'admin@admin.com']);
+
+        $response = $this->post('/login', [
+            'email' => $admin->email,
+            'password' => 'password',
+        ]);
+
         $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_normal_users_cannot_access_the_dashboard(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get('/dashboard')
+            ->assertForbidden();
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

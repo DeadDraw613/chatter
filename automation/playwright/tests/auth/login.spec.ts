@@ -18,7 +18,7 @@ test('Registered user can log in', async ({ page }) => {
   await loginPage.emailLocator.fill(email);
   await loginPage.passwordLocator.fill(passwd);
   await loginPage.signInButtonLocator.click();
-  expect(page.url()).toContain('dashboard');
+  expect(page.url()).toContain('chat');
   console.log(`✅ STATUS: User ${username} logged in successfully`);
 
   // User profile
