@@ -8,6 +8,9 @@ export default defineConfig({
         hmr: { host: '192.168.59.131' } // Hot Module Reloading also uses your IP
         // hmr: false
     },
+    build: {
+        target: 'es2015',
+    },
     plugins: [
         laravel({
             input: [
